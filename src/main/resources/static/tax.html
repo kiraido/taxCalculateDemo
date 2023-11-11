@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人所得税计算器</title>
+</head>
+<body>
+<h1>个人所得税计算器(仅供参考)</h1>
+
+<label for="income">输入收入：</label>
+<input type="number" id="income" placeholder="输入收入">
+
+<button onclick="calculateTax()">计算个人所得税</button>
+
+<p id="result"></p>
+
+<!-- 添加查询按钮 -->
+<button onclick="showCalculationInfo()">查询计算逻辑</button>
+
+<!-- 添加提示框 -->
+<div id="calculationInfoBox" style="display: none;">
+  <h2>计算逻辑说明：</h2>
+  <p id="calculationInfo"></p>
+</div>
+
+<script>
+  function calculateTax() {
+    // 获取输入的收入值
+    var income = document.getElementById("income").value;
+
+    // 发送GET请求到Web服务
+    fetch(`http://localhost:8080/tax/calculate?income=${income}`)
+            .then(response => response.json())
+            .then(data => {
+              // 显示计算结果
+              document.getElementById("result").innerText = '个人所得税：' + data.toFixed(2);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+  }
+
+  function showCalculationInfo() {
+    // 显示计算逻辑提示框
+    document.getElementById("calculationInfoBox").style.display = "block";
+
+    // 显示计算逻辑说明
+    var calculationInfo = "税率和扣除标准的简化版示例：\n";
+    calculationInfo += "收入小于等于3000，税率为3%。\n";
+    calculationInfo += "收入在3001到12000之间，税率为10%。\n";
+    calculationInfo += "收入在12001到25000之间，税率为20%。\n";
+    calculationInfo += "收入大于25000，税率为30%。";
+
+    document.getElementById("calculationInfo").innerText = calculationInfo;
+  }
+</script>
+</body>
+</html>
